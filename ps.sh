@@ -1,4 +1,5 @@
 #!/bin/bash
+# 10/11/17
 # ABOUT: Creates full-stack project structure
 
 # Present running directory
@@ -19,6 +20,7 @@ mkdir -p $1/client/public/scss && touch $1/client/public/scss/.gitignored
 
 # mkdir -p $1/server/bin && touch $1/server/bin/.gitignore
 mkdir -p $1/server/controllers && touch $1/server/controllers/.gitignore
+mkdir -p $1/server/middleware && touch $1/server/middleware/.gitignore
 mkdir -p $1/server/routes && touch $1/server/routes/.gitignore
 
 mkdir -p $1/template/css && touch $1/template/css/.gitignore
