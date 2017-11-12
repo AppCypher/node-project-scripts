@@ -27,6 +27,7 @@ mkdir -p $1/template/css && touch $1/template/css/.gitignore
 mkdir -p $1/template/fonts && touch $1/template/fonts/.gitignore
 mkdir -p $1/template/icons && touch $1/template/icons/.gitignore
 mkdir -p $1/template/images && touch $1/template/images/.gitignore
+mkdir -p $1/template/jade && touch $1/template/jade/.gitignore
 mkdir -p $1/template/js && touch $1/template/js/.gitignore
 mkdir -p $1/template/scss && touch $1/template/scss/.gitignore
 
@@ -56,7 +57,7 @@ cp $prd/files/.eslintrc.json $1/
 
 # Create ignore files 
 printf 'node_modules/\nwebpack/\n**/public/*\n**/bin/*\n' > $1/.eslintignore
-printf 'node_modules/\nwebpack/\n' > $1/.gitignore
+printf 'node_modules/\nwebpack/\ncoverage/\n' > $1/.gitignore
 printf 'bin/\n' > $1/server/.gitignore
 
 # Install webpack, loaders, babel, eslint and cross-env
