@@ -121,7 +121,22 @@ HEROKU
 = Add Procfile to project 
     web: node run server
 = Create new app on heroku 
-
+= Login to heroku 
+    $ heroku login 
+= Set heroku as a new remote from ur local git repo
+    $ heroku git:remote -a <appname> 
+= Push to repo 
+    $ git push heroku master
+= Add database to heroku 
+    $ heroku addons:create heroku-postgresql:hobby-dev
+= Run heroku bash 
+    $ heroku run bash 
+= Inside the bash, install sequelize-cli
+    $ npm install sequelize-cli -g
+= Still inside the bash, migrate and seed
+    $ sequelize db:migrate:all
+    $ sequelize db:seed:all
+= Push changes to heroku
 
 SEQUELIZE & POSTGRESQL 
 =
