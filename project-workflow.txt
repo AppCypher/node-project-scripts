@@ -38,36 +38,56 @@ MODELS
     - email: string, non-null, non-empty
     - isadmin: boolean, non-null
     - membershiptype: string, non-null, non-empty
-= Book 
-    - isbn: string, unique, non-null, non-empty
+    - events: 
+= EventCenter 
+    - name: string, non-null, non-empty
+    - location: string, unique
+    - facilities: Facility, non-null
+    - events: Event, non-null
+= Event 
     - title: string, non-null, non-empty
-    - year: integer, non-null
-    - author: string, non-null, non-empty
-    - description: string, non-null, non-empty
-    - count: integer, non-null
-= BorrowDetail 
-    - username: string, non-null, non-empty
-    - title: string, non-null, non-empty
-    - borrowdate: date, non-null
-    - returned: boolean, non-null
+    - eventcenter: EventCenter, non-null
+    - datetime: Date, non-null
+
+= Facility
+    - projector: boolean, non-null
+    - numchairs: integer, non-null
+    - numtables: integer, non-null
+    - parkinglot: boolean, non-null
+    - parkinglotcapacity: integer, non-null
 
 
 APIS 
-= Add new book => book must not exist (user, admin) => POST: books
-= Modify book => book must already exist (admin) => PUT: books/<bookId>
-= Get all books => (user, admin) => GET: books
-= Get borrowed books => borrowDetails of user (user, admin) => GET: users/<userId>/books?returned=false
-= Borrow book => book must not have been borrowed (user, admin) => POST: users/<userId>/books
-= Return book => book must have been borrowed (user, admin) => PUT: users/<userId>/books
-= Add new user => user must not exist (user, admin) => PUT: users/signup
-= Sign in user => book must already exist (user, admin) => PUT: users/signin
+= Signup user => user must not exist (user, admin) => POST /users
+= Log in user => user must exist (user, admin) => POST /users/login
+= Log out user => user must exist (user, admin) => POST /users/signout
+= Add new event => event must not exist (user, admin) => POST /events/
+= Modify an event => event must already exist (user, admin) => PUT /events/<eventId>
+= Delete an event => event must already exist (user, admin) => DELETE /events/<eventId>
+= Get a single event => events of a user (user, admin) => GET /events/<eventId>
+= Get all centers => (user, admin) => GET /centers/
+= Get all centers with certain properties => (user, admin) => GET /centers/search?loc=lagos+yaba [loc,chairs,tables,projector,parking,name]
+= Get a single center => center must exist (user, admin) => GET /centers/<centerId>
+= Add a new center => center must not exist (admin only) => POST /centers
+= Modify the details of a center => center must exist (admin only) => PUT /centers/<centerId>
 = Authentication and Validation 
     - cannot do administrative tasks without administrative privilege (modify book)
     - cannot access certain pages without a signin or signup with an associated session (pages except sigin and signup)
     - error if query is wrong or has no value 
     - error if certain body properties required not to be null are null
     - error if certain body properties required not to be empty are empty
-    - error if year, date, isbn, email, fullnames, username, password formats are wrong
+    - error if year, date, isbn, email, fullnames, username, password, searchcontent formats are wrong
+
+
+SITE PAGES 
+= Login 
+= Signup
+= Centers [popular-events, near-you]
+= Profile
+= User's Events
+= Admin Panel (add, modify, delete, make-admin)
+= Center Detail (modify, delete) [location, facilites, name, scheduled-events]
+
 
 STATUS CODES 
 = 4xx
@@ -83,16 +103,6 @@ STATUS CODES
     = 200: Ok 
     = 201: Created 
     = 202: Accepted
-
-SITE PAGES 
-= Login 
-= Signup
-= Trending and Recently Added Books 
-= Profile
-= Admin (add, modify, delete)
-= Borrow History 
-= Book Detail
-
 
 NIGHTWATCH 
 = Install nightwatch and selenium-download
@@ -140,6 +150,95 @@ HEROKU
 
 SEQUELIZE & POSTGRESQL 
 =
+
+BRANCH NAMING
+= Story Type 
+    - ft: feature 
+    - bg: bug
+    - ch: chore
+= Format 
+    - {story type}-{short summary}-{pivotal tracker id}
+= Example 
+    - ft-resources-rest-endpoints-111504508
+
+BRANCHES 
+= master
+    = dev 
+        # TEMPLATE UI (CHALLENGE 1)
+        = ch-project-structure
+        = ch-login-template-152799088
+        = ch-signup-template-152799074
+        = ch-event-details-template-152799201
+        = ch-event-create-template-152799104
+        = ch-event-delete-template-152799120
+        = ch-event-modify-template-152799115
+        = ch-event-center-modify-template-152799154
+        = ch-event-center-create-template-152799131
+        = ch-gh-pages-152821594
+        # API ROUTES & TESTS (CHALLENGE 2)
+        # DATABASE (CHALLENGE 3)
+        # REACT & TESTS (CHALLENGE 4)
+
+
+PULL REQUEST 
+= PR Title Format 
+    # {STORY_ID} {Story description}
+= PR Description Template 
+    #### What does the PR do?
+    .......
+    #### Description of task to be completed 
+    .......
+    #### How should this be manually tested?
+    .......
+    #### Any background context you want to provide
+    .......  
+    #### What are the relevant PivotalTracker stories?
+    .......
+    #### Screenshots (if appropriate)
+    .......
+
+
+CHALLENGES 
+= Challenge 1
+    = Todo: github, readme, project directories, gh-pages, gh-pages-branch, prs
+    = Tools: bootstrap4, html, scss, js
+    = Packages: _
+
+= Challenge 2
+    = Todo: servercode, api-endpoints, houndci, travisci, mocha-chai, coveralls, codeclimate, readme-badges, heroku, swagger
+    = Tools: eslint, webpack, postman, 
+    = Packages: express, morgan, body-parser, [nodemon]
+
+= Challenge 3
+    = Todo: db-sequelize, jsonwebtokens
+    = Tools: _
+    = Packages: postgresql, jsonwebtoken, sequelize
+
+= Challenge 4
+    = Todo: react-redux, jest, nightwatch
+    = Tools: 
+    = Packages: react, react-strap, react-redux, redux, react-router-dom, jest, enzyme
+
+= MustDo
+    = bundling, minification, sourcemaps (webpack)
+    = task runners (npm scripts)
+    = doc-style comments
+    = custom and decriptive error messages (json) 
+    = error codes
+    = test code coverage
+
+= Bonus 
+    = password reset feature
+
+
+CHALLENGE 1 TODO
+= Create github repo 
+= Add basic readme
+= master -> dev -> ch-project-structure
+= Run script (folders, readme, webpack, eslint, etc. )
+= Make PR and merge 
+= 
+
 
 USEFUL LINKS
 = TESTING  

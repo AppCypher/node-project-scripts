@@ -1,0 +1,188 @@
+TRAVIS, CODECLIMATE AND COVERALLS 
+= Install travis 
+    $ gem install travis
+= Get repo tokens from codeclimate and coveralls and encrypt with travis 
+    $ travis encrypt <repo-token> 
+= Add .travis.yml to project 
+    language: node_js
+        - "7"
+    install: 
+        - npm install 
+    services: 
+        - postgresql 
+    after_install:
+        - psql -c "CREATE DATABASE db_test;" -U postgres
+        - sequelize db:migrate:all && sequelize db:seed:all
+    cache: 
+        directories: 
+            - "node_modules"
+    before_script: 
+        - npm install codeclimate-test-reporter instanbull coveralls -g 
+    script: instabul cover "npm run test:api" -- -R spec
+    after_script: 
+        - codeclimate-test-reporter < ./coverage/lcov.info
+        - coveralls < ./coverage/lcov.info
+= Add .coveralls.yml to project 
+    repo_token: <repo-token>
+= Add .codeclimate.yml to project 
+    eslint:
+        enabled: true
+
+
+MODELS 
+= User 
+    - username: string, unique, non-null, non-empty
+    - password: string, non-null, non-empty
+    - email: string, unique, non-null, non-empty
+    - fullname: string, non-null, non-empty
+    - email: string, non-null, non-empty
+    - isadmin: boolean, non-null
+    - membershiptype: string, non-null, non-empty
+= Book 
+    - isbn: string, unique, non-null, non-empty
+    - title: string, non-null, non-empty
+    - year: integer, non-null
+    - author: string, non-null, non-empty
+    - description: string, non-null, non-empty
+    - count: integer, non-null
+= BorrowDetail 
+    - username: string, non-null, non-empty
+    - title: string, non-null, non-empty
+    - borrowdate: date, non-null
+    - returned: boolean, non-null
+
+
+APIS 
+= Add new book => book must not exist (user, admin) => POST: books
+= Modify book => book must already exist (admin) => PUT: books/<bookId>
+= Get all books => (user, admin) => GET: books
+= Get borrowed books => borrowDetails of user (user, admin) => GET: users/<userId>/books?returned=false
+= Borrow book => book must not have been borrowed (user, admin) => POST: users/<userId>/books
+= Return book => book must have been borrowed (user, admin) => PUT: users/<userId>/books
+= Add new user => user must not exist (user, admin) => PUT: users/signup
+= Sign in user => book must already exist (user, admin) => PUT: users/signin
+= Authentication and Validation 
+    - cannot do administrative tasks without administrative privilege (modify book)
+    - cannot access certain pages without a signin or signup with an associated session (pages except sigin and signup)
+    - error if query is wrong or has no value 
+    - error if certain body properties required not to be null are null
+    - error if certain body properties required not to be empty are empty
+    - error if year, date, isbn, email, fullnames, username, password formats are wrong
+
+STATUS CODES 
+= 4xx
+    = 400: Bad Request
+    = 401: Unauthorized
+    = 403: Forbidden
+    = 404: Not Found
+    = 409: Exists
+= 3xx
+    = 302: Found
+    = 304: Not Modified
+= 2xx
+    = 200: Ok 
+    = 201: Created 
+    = 202: Accepted
+
+SITE PAGES 
+= Login 
+= Signup
+= Trending and Recently Added Books 
+= Profile
+= Admin (add, modify, delete)
+= Borrow History 
+= Book Detail
+
+
+NIGHTWATCH 
+= Install nightwatch and selenium-download
+    $ npm install nightwatch -g  
+    $ npm install selenium-download -g
+= Add nightwatch.conf.js to project
+    = Check accompanying nightwatch.conf.js file
+= Run configuration file 
+    $ node nightwatch.conf.js 
+= Write tests
+    = Check accompanying test-e2e.js file
+= Run tests with 
+    $ nightwatch --config nightwatch.conf.js
+
+JEST 
+= Install dependencies 
+    $ npm install jest babel-jest enzyme enzyme-to-json react-addons-test-utils -D
+
+MOCHA & CHAI-HTTP 
+= Install mocha, chai and chai-http 
+    $ npm install mocha chai chai-http 
+
+
+HEROKU 
+= Download heroku-cli from heroku site 
+= Add Procfile to project 
+    web: node run server
+= Create new app on heroku 
+= Login to heroku 
+    $ heroku login 
+= Set heroku as a new remote from ur local git repo
+    $ heroku git:remote -a <appname> 
+= Push to repo 
+    $ git push heroku master
+= Add database to heroku 
+    $ heroku addons:create heroku-postgresql:hobby-dev
+= Run heroku bash 
+    $ heroku run bash 
+= Inside the bash, install sequelize-cli
+    $ npm install sequelize-cli -g
+= Still inside the bash, migrate and seed
+    $ sequelize db:migrate:all
+    $ sequelize db:seed:all
+= Push changes to heroku
+
+SEQUELIZE & POSTGRESQL 
+=
+
+USEFUL LINKS
+= TESTING  
+    = mocha & chai-http 
+        - http://mherman.org/blog/2015/09/10/testing-node-js-with-mocha-and-chai/
+    = react, and enzyme
+        - https://medium.com/@aghh1504/6-testing-react-components-using-jest-and-enzyme-b85db96fa1e3
+    = nightwatch
+        - https://github.com/dwyl/learn-nightwatch
+= CONTINUOUS INTEGRATION  
+    = travis & nodejs 
+        - https://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+    = travis & databse (postgresql)
+        - https://docs.travis-ci.com/user/database-setup/#PostgreSQL
+    = travis & codeclimate
+        - https://gist.github.com/rbournissent/0a704cae6347bbda460c
+    = travis & coveralls
+        - https://github.com/nickmerwin/node-coveralls
+
+BRANCH NAMING
+= Story Type 
+    - ft: feature 
+    - bg: bug
+    - ch: chore
+= Format 
+    - {story type}-{short summary}-{pivotal tracker id}
+= Example 
+    - ft-resources-rest-endpoints-111504508
+
+
+PULL REQUEST 
+= PR Title Format 
+    # {STORY_ID} {Story description}
+= PR Description Template 
+    #### What does the PR do?
+    .......
+    #### Description of task to be completed 
+    .......
+    #### How should this be manually tested?
+    .......
+    #### Any background context you want to provide
+    .......  
+    #### What are the relevant PivotalTracker stories?
+    .......
+    #### Screenshots (if appropriate)
+    .......
